@@ -18,7 +18,7 @@ namespace WebApi.Controllers
         public IActionResult GetAll()
         {
             try
-            {
+            {   
                 var pets = _petService.GetAll();
 
                 if (pets.Count == 0)
