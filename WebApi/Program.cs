@@ -4,6 +4,8 @@ using Arch.EntityFrameworkCore.UnitOfWork;
 using Data.Context;
 using Microsoft.EntityFrameworkCore;
 
+var corsPolicy = "myCors";
+
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -18,9 +20,16 @@ builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddUnitOfWork<DataContext>();
 // Add services to the container.
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,13 +43,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder =>
-{
-    builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader();
-});
+app.UseRouting();
+app.UseCors(corsPolicy);
 
 // Configure the HTTP request pipeline.
 

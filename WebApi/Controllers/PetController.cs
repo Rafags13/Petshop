@@ -6,6 +6,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Produces("application/json")]
     public class PetController: ControllerBase
     {
         private readonly IPetService _petService;
